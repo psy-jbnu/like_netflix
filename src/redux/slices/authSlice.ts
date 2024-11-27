@@ -1,16 +1,28 @@
 // src/redux/slices/authSlice.ts
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
+  isLoginVisible: boolean;
   email: string;
   password: string;
-  isLoginVisible: boolean;
+  registerEmail: string;
+  registerPassword: string;
+  confirmPassword: string;
+  rememberMe: boolean;
+  acceptTerms: boolean;
+  focusedInput: string | null;
 }
 
 const initialState: AuthState = {
+  isLoginVisible: true,
   email: '',
   password: '',
-  isLoginVisible: true,
+  registerEmail: '',
+  registerPassword: '',
+  confirmPassword: '',
+  rememberMe: false,
+  acceptTerms: false,
+  focusedInput: null,
 };
 
 const authSlice = createSlice({
@@ -20,14 +32,15 @@ const authSlice = createSlice({
     toggleLoginVisibility(state) {
       state.isLoginVisible = !state.isLoginVisible;
     },
-    setEmail(state, action: PayloadAction<string>) {
-      state.email = action.payload;
-    },
-    setPassword(state, action: PayloadAction<string>) {
-      state.password = action.payload;
+    setInputValue(
+      state,
+      action: PayloadAction<{ field: keyof AuthState; value: string | boolean | null }>
+    ) {
+      const { field, value } = action.payload;
+      (state[field] as string | boolean | null) = value;
     },
   },
 });
 
-export const { toggleLoginVisibility, setEmail, setPassword } = authSlice.actions;
+export const { toggleLoginVisibility, setInputValue } = authSlice.actions;
 export default authSlice.reducer;
